@@ -2,6 +2,12 @@
 
 A modern, responsive React TypeScript application for discovering movies and managing your personal watchlist. Built with Vite, Tailwind CSS, and the OMDb API.
 
+## 🌐 Live Demo
+
+**[🚀 Try it now!](https://mini-movie-explorer-one.vercel.app/)** - Experience the app live on Vercel
+
+---
+
 ## ✨ Features
 
 ### 🎯 Core Functionality
