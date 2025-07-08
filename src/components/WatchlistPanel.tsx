@@ -48,7 +48,7 @@ export const WatchlistPanel: React.FC<WatchlistPanelProps> = ({
             <div className="flex items-center gap-3 md:gap-4 p-3 md:p-4 rounded-lg 
                           border border-gray-100 dark:border-gray-700 hover:border-gray-200 
                           dark:hover:border-gray-600 transition-colors">
-              {/* Poster */}
+
               <div 
                 className="flex-shrink-0 w-12 h-16 md:w-16 md:h-24 bg-gray-100 dark:bg-gray-700 
                           rounded-lg overflow-hidden cursor-pointer"
@@ -70,7 +70,6 @@ export const WatchlistPanel: React.FC<WatchlistPanelProps> = ({
                 )}
               </div>
               
-              {/* Movie Info */}
               <div 
                 className="flex-1 min-w-0 cursor-pointer"
                 onClick={() => onMovieClick(movie)}
@@ -84,7 +83,6 @@ export const WatchlistPanel: React.FC<WatchlistPanelProps> = ({
                 </p>
               </div>
               
-              {/* Reorder Controls */}
               <div className="flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                 <button
                   onClick={() => moveMovie(index, index - 1)}
@@ -108,7 +106,6 @@ export const WatchlistPanel: React.FC<WatchlistPanelProps> = ({
                 </button>
               </div>
               
-              {/* Remove Button */}
               <button
                 onClick={() => onRemoveFromWatchlist(movie.imdbID)}
                 className="flex-shrink-0 p-1.5 md:p-2 text-gray-400 hover:text-red-500 

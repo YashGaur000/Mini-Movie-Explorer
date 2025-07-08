@@ -8,7 +8,7 @@ import {
   isMovieInWatchlist
 } from '../utils/localStorage';
 
-// Logger utility
+
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [Watchlist] ${message}`;

@@ -1,6 +1,5 @@
 import { OMDbResponse, OMDbDetailsResponse } from '../types/movie';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [API] ${message}`;

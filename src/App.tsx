@@ -13,7 +13,6 @@ import { useTheme } from './hooks/useTheme';
 import { searchMovies } from './utils/api';
 import { Movie, AppState } from './types/movie';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [App] ${message}`;
@@ -46,7 +45,6 @@ function App() {
   const { watchlist, addToWatchlist, removeFromWatchlist, reorderWatchlist, isInWatchlist } = useWatchlist();
   const theme = useTheme();
 
-  // Log initial render
   useEffect(() => {
     log('info', 'App component mounted');
   }, []);
@@ -171,7 +169,6 @@ function App() {
     }));
   };
 
-  // Log state changes
   useEffect(() => {
     log('info', 'App state updated:', {
       query: state.query,
@@ -187,7 +184,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 
                     dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-        {/* Header */}
+
         <div className="text-center mb-6 md:mb-8">
           <div className="flex items-center justify-center gap-2 md:gap-3 mb-4">
             <div className="p-2 md:p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
@@ -204,7 +201,6 @@ function App() {
           </p>
         </div>
 
-        {/* Search */}
         <div className="mb-6 md:mb-8">
           <SearchInput 
             onSearch={handleSearchInput}
@@ -213,9 +209,7 @@ function App() {
           />
         </div>
 
-        {/* Mobile Layout: Stack vertically on small screens */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Movies Section */}
           <div className="lg:col-span-2 order-2 lg:order-1">
             {state.isLoading && <LoadingSpinner />}
             
@@ -271,7 +265,6 @@ function App() {
             )}
           </div>
 
-          {/* Watchlist Section */}
           <div className="lg:col-span-1 order-1 lg:order-2">
             <WatchlistPanel 
               watchlist={watchlist}
@@ -283,7 +276,6 @@ function App() {
         </div>
       </div>
 
-      {/* Movie Details Drawer */}
       <MovieDetailsDrawer
         movie={state.selectedMovie}
         isOpen={state.isDrawerOpen}

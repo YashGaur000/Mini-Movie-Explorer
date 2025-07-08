@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { OMDbDetailsResponse, UseMovieDetailsReturn } from '../types/movie';
 import { getMovieDetails } from '../utils/api';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [MovieDetails] ${message}`;

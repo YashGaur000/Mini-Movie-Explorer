@@ -1,9 +1,7 @@
 import { Movie } from '../types/movie';
 
-// Local Storage Configuration
 const WATCHLIST_KEY = 'movie-watchlist';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [LocalStorage] ${message}`;
@@ -21,7 +19,6 @@ const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   }
 };
 
-// Local Storage Functions
 export const saveWatchlist = (watchlist: Movie[]): void => {
   log('info', `Saving watchlist with ${watchlist.length} movies`);
   try {
