@@ -12,7 +12,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   const posterUrl = movie.Poster !== 'N/A' ? movie.Poster : null;
 
   const handleCardClick = (e: React.MouseEvent) => {
-    // Don't trigger if clicking on the add button
+
     if ((e.target as HTMLElement).closest('button')) {
       return;
     }
@@ -20,7 +20,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
   };
 
   const handleAddClick = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent card click
+    e.stopPropagation(); 
     if (!isInWatchlist) {
       onAddToWatchlist(movie);
     }
@@ -33,7 +33,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
                   hover:scale-[1.02] ${className}`}
       onClick={handleCardClick}
     >
-      {/* Poster */}
+
       <div className="relative aspect-[2/3] bg-gray-100 dark:bg-gray-700 overflow-hidden">
         {posterUrl ? (
           <img 
@@ -50,7 +50,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
           </div>
         )}
         
-        {/* Click indicator */}
+
         <div className="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 
                       transition-all duration-200 flex items-center justify-center">
           <div className="opacity-0 hover:opacity-100 transition-opacity duration-200 
@@ -62,7 +62,7 @@ export const MovieCard: React.FC<MovieCardProps> = ({
         </div>
       </div>
       
-      {/* Content */}
+
       <div className="p-3 md:p-4">
         <h3 className="font-semibold text-base md:text-lg text-gray-900 dark:text-white 
                      mb-2 line-clamp-2 leading-tight">

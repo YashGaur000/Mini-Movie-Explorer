@@ -5,6 +5,7 @@ import { MovieCard } from './components/MovieCard';
 import { WatchlistPanel } from './components/WatchlistPanel';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ErrorMessage } from './components/ErrorMessage';
+import { NoResultsMessage } from './components/NoResultsMessage';
 import { ThemeToggle } from './components/ThemeToggle';
 import { MovieDetailsDrawer } from './components/MovieDetailsDrawer';
 import { useDebounce } from './hooks/useDebounce';
@@ -13,7 +14,6 @@ import { useTheme } from './hooks/useTheme';
 import { searchMovies } from './utils/api';
 import { Movie, AppState } from './types/movie';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [App] ${message}`;
@@ -38,6 +38,7 @@ function App() {
     isLoading: false,
     error: null,
     hasSearched: false,
+    noResults: false,
     selectedMovie: null,
     isDrawerOpen: false
   });
@@ -46,7 +47,6 @@ function App() {
   const { watchlist, addToWatchlist, removeFromWatchlist, reorderWatchlist, isInWatchlist } = useWatchlist();
   const theme = useTheme();
 
-  // Log initial render
   useEffect(() => {
     log('info', 'App component mounted');
   }, []);
@@ -61,6 +61,7 @@ function App() {
         ...prev,
         movies: [],
         error: null,
+        noResults: false,
         hasSearched: false
       }));
     }
@@ -78,6 +79,7 @@ function App() {
       ...prev,
       isLoading: true,
       error: null,
+      noResults: false,
       hasSearched: true
     }));
     
@@ -100,17 +102,35 @@ function App() {
         setState(prev => ({
           ...prev,
           movies,
-          isLoading: false
+          isLoading: false,
+          noResults: false
         }));
       } else {
+        // Check if this is a "no results" case or an actual error
         const errorMessage = response.Error || 'No movies found';
-        log('warn', `API returned error: ${errorMessage}`);
-        setState(prev => ({
-          ...prev,
-          error: errorMessage,
-          movies: [],
-          isLoading: false
-        }));
+        const isNoResults = errorMessage.toLowerCase().includes('movie not found') || 
+                           errorMessage.toLowerCase().includes('no movies found') ||
+                           errorMessage.toLowerCase().includes('not found');
+        
+        if (isNoResults) {
+          log('info', `No movies found for query: "${searchQuery}"`);
+          setState(prev => ({
+            ...prev,
+            movies: [],
+            isLoading: false,
+            noResults: true,
+            error: null
+          }));
+        } else {
+          log('warn', `API returned error: ${errorMessage}`);
+          setState(prev => ({
+            ...prev,
+            error: errorMessage,
+            movies: [],
+            isLoading: false,
+            noResults: false
+          }));
+        }
       }
     } catch (err) {
       log('error', 'Search failed with error:', err);
@@ -118,7 +138,8 @@ function App() {
         ...prev,
         error: 'Failed to search movies. Please try again.',
         movies: [],
-        isLoading: false
+        isLoading: false,
+        noResults: false
       }));
     }
   };
@@ -171,7 +192,6 @@ function App() {
     }));
   };
 
-  // Log state changes
   useEffect(() => {
     log('info', 'App state updated:', {
       query: state.query,
@@ -187,7 +207,7 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 
                     dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors">
       <div className="max-w-7xl mx-auto px-4 py-6 md:py-8">
-        {/* Header */}
+
         <div className="text-center mb-6 md:mb-8">
           <div className="flex items-center justify-center gap-2 md:gap-3 mb-4">
             <div className="p-2 md:p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
@@ -204,7 +224,6 @@ function App() {
           </p>
         </div>
 
-        {/* Search */}
         <div className="mb-6 md:mb-8">
           <SearchInput 
             onSearch={handleSearchInput}
@@ -213,9 +232,7 @@ function App() {
           />
         </div>
 
-        {/* Mobile Layout: Stack vertically on small screens */}
         <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 md:gap-8">
-          {/* Movies Section */}
           <div className="lg:col-span-2 order-2 lg:order-1">
             {state.isLoading && <LoadingSpinner />}
             
@@ -223,7 +240,11 @@ function App() {
               <ErrorMessage message={state.error} onRetry={handleRetry} />
             )}
             
-            {!state.isLoading && !state.error && state.movies.length > 0 && (
+            {state.noResults && (
+              <NoResultsMessage query={state.query} onRetry={handleRetry} />
+            )}
+            
+            {!state.isLoading && !state.error && !state.noResults && state.movies.length > 0 && (
               <div>
                 <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white 
                              mb-4 md:mb-6 flex items-center gap-2">
@@ -244,7 +265,7 @@ function App() {
               </div>
             )}
             
-            {!state.isLoading && !state.error && state.hasSearched && state.movies.length === 0 && (
+            {!state.isLoading && !state.error && !state.noResults && state.hasSearched && state.movies.length === 0 && (
               <div className="text-center py-8 md:py-12">
                 <Search className="h-12 w-12 md:h-16 md:w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                 <h3 className="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2">
@@ -271,7 +292,6 @@ function App() {
             )}
           </div>
 
-          {/* Watchlist Section */}
           <div className="lg:col-span-1 order-1 lg:order-2">
             <WatchlistPanel 
               watchlist={watchlist}
@@ -283,7 +303,6 @@ function App() {
         </div>
       </div>
 
-      {/* Movie Details Drawer */}
       <MovieDetailsDrawer
         movie={state.selectedMovie}
         isOpen={state.isDrawerOpen}

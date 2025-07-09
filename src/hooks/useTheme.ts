@@ -3,7 +3,6 @@ import { UseThemeReturn } from '../types/movie';
 
 const THEME_KEY = 'movie-app-theme';
 
-// Logger utility
 const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
   const timestamp = new Date().toISOString();
   const logMessage = `[${timestamp}] [${level.toUpperCase()}] [Theme] ${message}`;
@@ -23,7 +22,6 @@ const log = (level: 'info' | 'error' | 'warn', message: string, data?: any) => {
 
 export const useTheme = (): UseThemeReturn => {
   const [isDark, setIsDark] = useState<boolean>(() => {
-    // Check localStorage first, then system preference
     const saved = localStorage.getItem(THEME_KEY);
     if (saved !== null) {
       const isDarkMode = saved === 'dark';
@@ -36,11 +34,11 @@ export const useTheme = (): UseThemeReturn => {
   });
 
   useEffect(() => {
-    // Update localStorage
+
     localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
     log('info', `Theme saved to localStorage: ${isDark ? 'dark' : 'light'}`);
     
-    // Update document class
+
     if (isDark) {
       document.documentElement.classList.add('dark');
       log('info', 'Dark mode enabled');

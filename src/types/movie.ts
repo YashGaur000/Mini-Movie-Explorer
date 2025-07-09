@@ -1,4 +1,3 @@
-// API Response Types
 export interface OMDbResponse {
   Response: 'True' | 'False';
   Search?: Movie[];
@@ -37,7 +36,6 @@ export interface Rating {
   Value: string;
 }
 
-// Core Movie Type
 export interface Movie {
   imdbID: string;
   Title: string;
@@ -46,7 +44,6 @@ export interface Movie {
   Poster: string;
 }
 
-// Component Props Types
 export interface SearchInputProps {
   onSearch: (query: string) => void;
   isLoading?: boolean;
@@ -83,7 +80,6 @@ export interface MovieDetailsDrawerProps {
   className?: string;
 }
 
-// Hook Return Types
 export interface UseWatchlistReturn {
   watchlist: Movie[];
   addToWatchlist: (movie: Movie) => void;
@@ -105,13 +101,13 @@ export interface UseMovieDetailsReturn {
   fetchMovieDetails: (imdbId: string) => Promise<void>;
 }
 
-// App State Types
 export interface AppState {
   query: string;
   movies: Movie[];
   isLoading: boolean;
   error: string | null;
   hasSearched: boolean;
+  noResults: boolean;
   selectedMovie: Movie | null;
   isDrawerOpen: boolean;
 }
