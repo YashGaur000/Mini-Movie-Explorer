@@ -26,7 +26,7 @@ export const SearchInput: React.FC<SearchInputProps> = ({
     <form onSubmit={handleSubmit} className={`w-full max-w-2xl mx-auto ${className}`}>
       <div className="relative">
         <Search className={`absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 ${
-          isLoading ? 'text-blue-500 animate-pulse' : 'text-gray-400 dark:text-gray-500'
+          isLoading ? 'text-blue-50 animate-pulse' : 'text-gray-400 dark:text-gray-500'
         }`} />
         
         <input

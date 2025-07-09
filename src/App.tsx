@@ -5,6 +5,7 @@ import { MovieCard } from './components/MovieCard';
 import { WatchlistPanel } from './components/WatchlistPanel';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { ErrorMessage } from './components/ErrorMessage';
+import { NoResultsMessage } from './components/NoResultsMessage';
 import { ThemeToggle } from './components/ThemeToggle';
 import { MovieDetailsDrawer } from './components/MovieDetailsDrawer';
 import { useDebounce } from './hooks/useDebounce';
@@ -37,6 +38,7 @@ function App() {
     isLoading: false,
     error: null,
     hasSearched: false,
+    noResults: false,
     selectedMovie: null,
     isDrawerOpen: false
   });
@@ -59,6 +61,7 @@ function App() {
         ...prev,
         movies: [],
         error: null,
+        noResults: false,
         hasSearched: false
       }));
     }
@@ -76,6 +79,7 @@ function App() {
       ...prev,
       isLoading: true,
       error: null,
+      noResults: false,
       hasSearched: true
     }));
     
@@ -98,17 +102,35 @@ function App() {
         setState(prev => ({
           ...prev,
           movies,
-          isLoading: false
+          isLoading: false,
+          noResults: false
         }));
       } else {
+        // Check if this is a "no results" case or an actual error
         const errorMessage = response.Error || 'No movies found';
-        log('warn', `API returned error: ${errorMessage}`);
-        setState(prev => ({
-          ...prev,
-          error: errorMessage,
-          movies: [],
-          isLoading: false
-        }));
+        const isNoResults = errorMessage.toLowerCase().includes('movie not found') || 
+                           errorMessage.toLowerCase().includes('no movies found') ||
+                           errorMessage.toLowerCase().includes('not found');
+        
+        if (isNoResults) {
+          log('info', `No movies found for query: "${searchQuery}"`);
+          setState(prev => ({
+            ...prev,
+            movies: [],
+            isLoading: false,
+            noResults: true,
+            error: null
+          }));
+        } else {
+          log('warn', `API returned error: ${errorMessage}`);
+          setState(prev => ({
+            ...prev,
+            error: errorMessage,
+            movies: [],
+            isLoading: false,
+            noResults: false
+          }));
+        }
       }
     } catch (err) {
       log('error', 'Search failed with error:', err);
@@ -116,7 +138,8 @@ function App() {
         ...prev,
         error: 'Failed to search movies. Please try again.',
         movies: [],
-        isLoading: false
+        isLoading: false,
+        noResults: false
       }));
     }
   };
@@ -217,7 +240,11 @@ function App() {
               <ErrorMessage message={state.error} onRetry={handleRetry} />
             )}
             
-            {!state.isLoading && !state.error && state.movies.length > 0 && (
+            {state.noResults && (
+              <NoResultsMessage query={state.query} onRetry={handleRetry} />
+            )}
+            
+            {!state.isLoading && !state.error && !state.noResults && state.movies.length > 0 && (
               <div>
                 <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white 
                              mb-4 md:mb-6 flex items-center gap-2">
@@ -238,7 +265,7 @@ function App() {
               </div>
             )}
             
-            {!state.isLoading && !state.error && state.hasSearched && state.movies.length === 0 && (
+            {!state.isLoading && !state.error && !state.noResults && state.hasSearched && state.movies.length === 0 && (
               <div className="text-center py-8 md:py-12">
                 <Search className="h-12 w-12 md:h-16 md:w-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
                 <h3 className="text-lg md:text-xl font-medium text-gray-900 dark:text-white mb-2">

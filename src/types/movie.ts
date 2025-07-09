@@ -107,6 +107,7 @@ export interface AppState {
   isLoading: boolean;
   error: string | null;
   hasSearched: boolean;
+  noResults: boolean;
   selectedMovie: Movie | null;
   isDrawerOpen: boolean;
 }
